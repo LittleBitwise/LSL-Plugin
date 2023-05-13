@@ -81,7 +81,11 @@
 			"foreground": "var(green)",
 			"font_style": "",
 		},{
-			"scope": "constant.numeric",
+			"scope": "meta.function.parameters",
+			"foreground": "var(orange)",
+			"font_style": "",
+		},{
+			"scope": "constant",
 			"foreground": "var(green2)",
 			"font_style": "",
 		},{
@@ -92,6 +96,18 @@
 			"scope": "constant.character.escape",
 			"foreground": "var(red)",
 			"font_style": "",
+		},{
+			"scope": "entity.name.function",
+			"foreground": "var(teal2)",
+			"font_style": "",
+		},{
+			"scope": "keyword.control.flow.jump",
+			"foreground": "#f00",
+			"font_style": "bold",
+		},{
+			"scope": "keyword.control.flow.jump.out",
+			"foreground": "#0f0",
+			"font_style": "bold",
 		}
 	]
 }

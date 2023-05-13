@@ -12,39 +12,50 @@ version: 2
 
 variables:
   validIdentifier: '(?:\b[_a-zA-Z]+\w*\b)'
-  validSign: '(?:\+|\-)'
-  validInteger: '(?:\b[0-9]+\b)'
-  validHex: '(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))'
 
   validFloat: '(?:(?:\b[0-9]+\.[0-9]+\b)|(?:[0-9]+\.(?![0-9]))|(?:(?<!\w)\.[0-9]+))'
+  validInteger: '(?:\b[0-9]+\b)'
+  validHexadecimal: '(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))'
 
+  validSign: '(?:\+|\-)'
+  validNumber: '(?:{{validInteger}}|{{validHexadecimal}}|{{validFloat}})'
 
-  validNumber: '(?:{{validInteger}}|{{validHex}}|{{validFloat}})'
   validVector: '<\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}}\s*>'
+  validRotation: '<\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}}\s*>'
+
+# <\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}}\s*>
+# <\s*(?:\+|\-)?(?:(?:\b[0-9]+\b)|(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))|(?:(?:\b[0-9]+\.[0-9]+\b)|(?:[0-9]+\.(?![0-9]))|(?:(?<!\w)\.[0-9]+))),\s*(?:\+|\-)?(?:(?:\b[0-9]+\b)|(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))|(?:(?:\b[0-9]+\.[0-9]+\b)|(?:[0-9]+\.(?![0-9]))|(?:(?<!\w)\.[0-9]+))),\s*(?:\+|\-)?(?:(?:\b[0-9]+\b)|(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))|(?:(?:\b[0-9]+\.[0-9]+\b)|(?:[0-9]+\.(?![0-9]))|(?:(?<!\w)\.[0-9]+)))\s*>
 
   validTypes: '(?:\b(float|integer|key|list|rotation|string|vector)\b)'
   validEvents: '(?:\b(at_rot_target|at_target|attach|changed|collision|collision_end|collision_start|control|dataserver|email|experience_permissions|experience_permissions_denied|http_request|http_response|land_collision|land_collision_end|land_collision_start|link_message|linkset_data|listen|money|moving_end|moving_start|no_sensor|not_at_rot_target|not_at_target|object_rez|on_rez|path_update|remote_data|run_time_permissions|sensor|state_entry|state_exit|timer|touch|touch_end|touch_start|transaction_result)\b)'
 
 contexts:
   main:
+    - include: commentLine
+    - include: commentBlock
     - include: state
 
   eventBody:
     - meta_scope: meta.event.lsl
     - include: commentLine
-    - include: types
-    - include: operators
+    - include: commentBlock
+    - include: flowControl
+    - include: llFunction
+    - include: storage
+    - include: constant
+    - include: identifier
+    - include: vector
     - include: hexadecimal
     - include: integer
     - include: float
     - include: string
+    - include: operators
+
 # ---------
 
   commentLine:
     - match: (//).*$\n?
       scope: comment.line.double-slash.lsl
-
-# ---------
 
   commentBlock:
     - include: commentBlockBegin
@@ -208,8 +219,17 @@ contexts:
       pop: 1
 
   eventParamsBody:
-    - match: '(?:{{validTypes}}\s+{{validIdentifier}},?)*'
-      scope: meta.event.params.lsl
+    - meta_scope: meta.event.params.lsl
+    - match: \,
+      scope: punctuation.separator.parameter.function.lsl
+    - match: \s*
+      push: functionParameter
+    - include: eventParamsEnd
+
+  functionParameter:
+    - include: storage
+    - match: '(?<!\.){{validIdentifier}}'
+      scope: meta.event.params.parameter.lsl
     - include: eventParamsEnd
 
   eventParamsEnd:
@@ -236,6 +256,7 @@ contexts:
     - include: binaryOperators
     - include: assignment
     - include: accessor
+    - include: member
 
   unaryOperators:
     - match: '~'
@@ -301,38 +322,27 @@ contexts:
   accessor:
     - match: \.(?=[xyzs]\b)
       scope: punctuation.accessor.lsl
-    - match: (?<=\.)[xyzs]\b
-      scope: variable.other.member.lsl
 
 # ---------
 
-  types:
+  storage:
     - match: '{{validTypes}}'
       scope: storage.type.lsl
-    - include: identifier
-    - include: vector
-    #- include: state
-    #- include: constant
-    #- include: string
-    #- include: float
-    #- include: integer
-    #- include: hexadecimal
-
-  # Any all-caps variable is const-styled
-  constant:
-    - match: \b[A-Z_]+[0-9]*\b
-      scope: constant.language
 
   identifier:
-    - match: '{{validIdentifier}}'
+    - match: \b[A-Z_]+[0-9]*\b
+      scope: constant.language.lsl
+    - match: '(?<!\.){{validIdentifier}}'
       scope: variable.lsl
+    - match: (?<=\.)[xyzs]\b
+      scope: variable.other.member.lsl
 
   integer:
     - match: '(?<!\.){{validInteger}}(?!\.)'
       scope: constant.numeric.integer.decimal.lsl
 
   hexadecimal:
-    - match: '{{validHex}}'
+    - match: '{{validHexadecimal}}'
       scope: constant.numeric.integer.hexadecimal.lsl
 
   float:
@@ -348,7 +358,24 @@ contexts:
 
 # ---------
 
-
   flowControl:
-    - match: \b(jump|return|if|else|for|do|while|@)\b
-      scope: keyword.control.flow.lsl
+    - match: (?:\bjump\s+{{validIdentifier}}\s*;)
+      scope: keyword.control.flow.jump.inlsl
+    - match: (?:\@\s*break\s*;)
+      scope: keyword.control.flow.jump.out.lsl
+    - match: \b(?:for|do|while)\b
+      scope: keyword.control.flow.loop.lsl
+    - match: \b(?:if|else)\b
+      scope: keyword.control.flow.conditional.lsl
+    - match: \b(?:return)\b
+      scope: keyword.control.flow.return.lsl
+
+# ---------
+
+  llFunction:
+    - match: ll[A-Z]\w+
+      scope: entity.name.function.lsl
+
+# ---------
+# Todo: vector vs comparison
+# Todo: user functions
