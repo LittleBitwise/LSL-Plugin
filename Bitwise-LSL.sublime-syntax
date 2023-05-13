@@ -11,29 +11,33 @@ scope: source.lsl
 version: 2
 
 variables:
-  identifier: '[_a-zA-Z]+\w*'
+  validIdentifier: '(?:\b[_a-zA-Z]+\w*\b)'
   validSign: '(?:\+|\-)'
   validInteger: '(?:\b[0-9]+\b)'
-  validHex: '(?:\b(?i:(0x[0-9a-f]+))\b)'
-  validFloat: '(?:\b(?:[0-9]+\.[0-9]*)|(?:\.[0-9]+)\b)'
+  validHex: '(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))'
+
+  validFloat: '(?:(?:\b[0-9]+\.[0-9]+\b)|(?:[0-9]+\.(?![0-9]))|(?:(?<!\w)\.[0-9]+))'
+
+
   validNumber: '(?:{{validInteger}}|{{validHex}}|{{validFloat}})'
   validVector: '<\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}}\s*>'
 
-  validTypes: '(?:\bfloat\b|\binteger\b|\bkey\b|\blist\b|\brotation\b|\bstring\b|\bvector\b)'
-  validEvents: at_rot_target|at_target|attach|changed|collision|collision_end|collision_start|control|dataserver|email|experience_permissions|experience_permissions_denied|http_request|http_response|land_collision|land_collision_end|land_collision_start|link_message|linkset_data|listen|money|moving_end|moving_start|no_sensor|not_at_rot_target|not_at_target|object_rez|on_rez|path_update|remote_data|run_time_permissions|sensor|state_entry|state_exit|timer|touch|touch_end|touch_start|transaction_result
+  validTypes: '(?:\b(float|integer|key|list|rotation|string|vector)\b)'
+  validEvents: '(?:\b(at_rot_target|at_target|attach|changed|collision|collision_end|collision_start|control|dataserver|email|experience_permissions|experience_permissions_denied|http_request|http_response|land_collision|land_collision_end|land_collision_start|link_message|linkset_data|listen|money|moving_end|moving_start|no_sensor|not_at_rot_target|not_at_target|object_rez|on_rez|path_update|remote_data|run_time_permissions|sensor|state_entry|state_exit|timer|touch|touch_end|touch_start|transaction_result)\b)'
 
 contexts:
   main:
+    - include: state
+
+  eventBody:
+    - meta_scope: meta.event.lsl
     - include: commentLine
-    - include: commentBlock
-    - include: parenthesesGroup
-    - include: bracesGroup
-    - include: squareBracketsGroup
-    - include: angleBracketsGroup
     - include: types
     - include: operators
-    - include: flowControl
-
+    - include: hexadecimal
+    - include: integer
+    - include: float
+    - include: string
 # ---------
 
   commentLine:
@@ -121,21 +125,21 @@ contexts:
 
 # ---------
 
-  angleBracketsGroup:
-    - include: angleBracketsGroupBegin
+  vector:
+    - include: vectorBegin
 
-  angleBracketsGroupBegin:
+  vectorBegin:
     - match: \<
       scope: storage.type.vector.begin.lsl
-      push: angleBracketsGroupBody
+      push: vectorBody
 
-  angleBracketsGroupBody:
-    #- meta_scope: storage.type.vector.lsl
+  vectorBody:
+    - meta_scope: storage.type.vector.lsl
     - include: identifier
-    - include: angleBracketsGroupEnd
+    - include: vectorEnd
     - include: float
 
-  angleBracketsGroupEnd:
+  vectorEnd:
     - match: \>
       scope: storage.type.vector.end.lsl
       pop: 1
@@ -167,7 +171,7 @@ contexts:
     - match: default
       scope: entity.name.class.state.lsl
       push: stateBegin
-    - match: state\s+({{identifier}})
+    - match: state\s+({{validIdentifier}})
       captures:
         1: entity.name.class.state.lsl
       push: stateBegin
@@ -180,7 +184,7 @@ contexts:
 
   stateBody:
     - meta_scope: meta.state.lsl
-    - include: main
+    - include: event
     - include: stateEnd
 
   stateEnd:
@@ -193,24 +197,36 @@ contexts:
   event:
     - match: '{{validEvents}}'
       scope: entity.name.class.event.lsl
-      push: eventParams
+      push: eventParamsBegin
+      #pop: 1
 
-  eventParams:
-    - match: \s*\(.*\)
-    - include: eventBegin
+  eventParamsBegin:
+    - match: \s*
+    - match: \(
+      scope: punctuation.section.event.params.begin.lsl
+      push: eventParamsBody
+      pop: 1
+
+  eventParamsBody:
+    - match: '(?:{{validTypes}}\s+{{validIdentifier}},?)*'
+      scope: meta.event.params.lsl
+    - include: eventParamsEnd
+
+  eventParamsEnd:
+    - match: \)
+      scope: punctuation.section.event.params.end.lsl
+      set: eventBegin
+    - include: eventEnd
 
   eventBegin:
     - match: \{
-      store: punctuation.section.event.begin.lsl
-
-  eventBody:
-    - meta_scope: meta.event.lsl
-    - include: main
-    - include: eventEnd
+      scope: punctuation.section.event.begin.lsl
+      push: eventBody
+      pop: 1
 
   eventEnd:
     - match: \}
-      store: punctuation.section.event.end.lsl
+      scope: punctuation.section.event.end.lsl
       pop: 1
 
 # ---------
@@ -292,22 +308,27 @@ contexts:
 
   types:
     - match: '{{validTypes}}'
-    - include: state
-    - include: constant
+      scope: storage.type.lsl
     - include: identifier
     - include: vector
-    - include: string
-    - include: float
-    - include: integer
-    - include: hexadecimal
+    #- include: state
+    #- include: constant
+    #- include: string
+    #- include: float
+    #- include: integer
+    #- include: hexadecimal
 
   # Any all-caps variable is const-styled
   constant:
     - match: \b[A-Z_]+[0-9]*\b
       scope: constant.language
 
+  identifier:
+    - match: '{{validIdentifier}}'
+      scope: variable.lsl
+
   integer:
-    - match: '{{validInteger}}'
+    - match: '(?<!\.){{validInteger}}(?!\.)'
       scope: constant.numeric.integer.decimal.lsl
 
   hexadecimal:
@@ -318,10 +339,6 @@ contexts:
     # matches "1.0", "1." and ".1"
     - match: '{{validFloat}}'
       scope: meta.number.float.decimal.lsl constant.numeric.value.lsl constant.numeric.float.decimal.lsl
-
-#  vector:
-#    - match: validVector
-#      scope: storage.type.vector.lsl
 
   escapeCharacter:
     - match: \\n

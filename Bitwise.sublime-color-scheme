@@ -61,11 +61,11 @@
 			"foreground": "var(white)",
 			"font_style": "bold"
 		},{
-			"scope": "support.function.event, entity.name.class.state",
+			"scope": "support.function.event, entity.name.class.state, entity.name.class.event",
 			"foreground": "var(white)",
 			"font_style": "italic"
 		},{
-			"scope": "punctuation.section.brackets.begin.lsl, punctuation.section.brackets.end.lsl",
+			"scope": "punctuation.section.brackets.begin, punctuation.section.brackets.end",
 			"foreground": "var(white)",
 			"font_style": "glow"
 		},{
@@ -75,6 +75,22 @@
 		},{
 			"scope": "support.function.ll",
 			"foreground": "",
+			"font_style": "",
+		},{
+			"scope": "variable",
+			"foreground": "var(green)",
+			"font_style": "",
+		},{
+			"scope": "constant.numeric",
+			"foreground": "var(green2)",
+			"font_style": "",
+		},{
+			"scope": "string",
+			"foreground": "var(teal)",
+			"font_style": "",
+		},{
+			"scope": "constant.character.escape",
+			"foreground": "var(red)",
 			"font_style": "",
 		}
 	]
