@@ -1,0 +1,337 @@
+%YAML 1.2
+---
+
+name: Bitwise-LSL
+
+file_extensions:
+  - lsl
+
+scope: source.lsl
+
+version: 2
+
+variables:
+  identifier: '[_a-zA-Z]+\w*'
+  validSign: '(?:\+|\-)'
+  validInteger: '(?:\b[0-9]+\b)'
+  validHex: '(?:\b(?i:(0x[0-9a-f]+))\b)'
+  validFloat: '(?:\b(?:[0-9]+\.[0-9]*)|(?:\.[0-9]+)\b)'
+  validNumber: '(?:{{validInteger}}|{{validHex}}|{{validFloat}})'
+  validVector: '<\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}}\s*>'
+
+  validTypes: '(?:\bfloat\b|\binteger\b|\bkey\b|\blist\b|\brotation\b|\bstring\b|\bvector\b)'
+  validEvents: at_rot_target|at_target|attach|changed|collision|collision_end|collision_start|control|dataserver|email|experience_permissions|experience_permissions_denied|http_request|http_response|land_collision|land_collision_end|land_collision_start|link_message|linkset_data|listen|money|moving_end|moving_start|no_sensor|not_at_rot_target|not_at_target|object_rez|on_rez|path_update|remote_data|run_time_permissions|sensor|state_entry|state_exit|timer|touch|touch_end|touch_start|transaction_result
+
+contexts:
+  main:
+    - include: commentLine
+    - include: commentBlock
+    - include: parenthesesGroup
+    - include: bracesGroup
+    - include: squareBracketsGroup
+    - include: angleBracketsGroup
+    - include: types
+    - include: operators
+    - include: flowControl
+
+# ---------
+
+  commentLine:
+    - match: (//).*$\n?
+      scope: comment.line.double-slash.lsl
+
+# ---------
+
+  commentBlock:
+    - include: commentBlockBegin
+
+  commentBlockBegin:
+    - match: /\*
+      scope: punctuation.definition.comment.begin.lsl
+      push: commentBlockBody
+
+  commentBlockBody:
+    - meta_scope: comment.block.lsl
+    - include: commentBlockEnd
+
+  commentBlockEnd:
+    - match: \*+/
+      scope: punctuation.definition.comment.end.lsl
+      pop: 1
+
+# ---------
+
+  parenthesesGroup:
+    - include: parenthesesGroupBegin
+
+  parenthesesGroupBegin:
+    - match: \(
+      scope: punctuation.section.parens.begin.lsl
+      push: parenthesesGroupBody
+
+  parenthesesGroupBody:
+    - meta_scope: meta.parens.lsl
+    - include: parenthesesGroupEnd
+
+  parenthesesGroupEnd:
+    - match: \)
+      scope: punctuation.section.parens.end.lsl
+      pop: 1
+    - include: main
+
+# ---------
+
+  bracesGroup:
+    - include: bracesGroupBegin
+
+  bracesGroupBegin:
+    - match: \{
+      scope: punctuation.section.braces.begin.lsl
+      push: bracesGroupBody
+
+  bracesGroupBody:
+    - meta_scope: meta.braces.lsl
+    - include: bracesGroupEnd
+
+  bracesGroupEnd:
+    - match: \}
+      scope: punctuation.section.braces.end.lsl
+      pop: 1
+    - include: main
+
+# ---------
+
+  squareBracketsGroup:
+    - include: squareBracketsGroupBegin
+
+  squareBracketsGroupBegin:
+    - match: \[
+      scope: punctuation.section.brackets.begin.lsl
+      push: squareBracketsGroupBody
+
+  squareBracketsGroupBody:
+    - meta_scope: meta.brackets.lsl
+    - include: squareBracketsGroupEnd
+
+  squareBracketsGroupEnd:
+    - match: \]
+      scope: punctuation.section.brackets.end.lsl
+      pop: 1
+    - include: main
+
+# ---------
+
+  angleBracketsGroup:
+    - include: angleBracketsGroupBegin
+
+  angleBracketsGroupBegin:
+    - match: \<
+      scope: storage.type.vector.begin.lsl
+      push: angleBracketsGroupBody
+
+  angleBracketsGroupBody:
+    #- meta_scope: storage.type.vector.lsl
+    - include: identifier
+    - include: angleBracketsGroupEnd
+    - include: float
+
+  angleBracketsGroupEnd:
+    - match: \>
+      scope: storage.type.vector.end.lsl
+      pop: 1
+    - include: main
+
+# ---------
+
+  string:
+    - include: stringBegin
+
+  stringBegin:
+    - match: \"
+      scope: punctuation.definition.string.begin.lsl
+      push: stringBody
+
+  stringBody:
+    - meta_scope: meta.string.lsl string.quoted.double.lsl
+    - include: stringEnd
+    - include: escapeCharacter
+
+  stringEnd:
+    - match: \"
+      scope: punctuation.definition.string.end.lsl
+      pop: 1
+
+# ---------
+
+  state:
+    - match: default
+      scope: entity.name.class.state.lsl
+      push: stateBegin
+    - match: state\s+({{identifier}})
+      captures:
+        1: entity.name.class.state.lsl
+      push: stateBegin
+
+  stateBegin:
+    - match: \{
+      scope: punctuation.section.state.begin.lsl
+      push: stateBody
+      pop: 1
+
+  stateBody:
+    - meta_scope: meta.state.lsl
+    - include: main
+    - include: stateEnd
+
+  stateEnd:
+    - match: \}
+      scope: punctuation.section.state.end.lsl
+      pop: 1
+
+# ---------
+
+  event:
+    - match: '{{validEvents}}'
+      scope: entity.name.class.event.lsl
+      push: eventParams
+
+  eventParams:
+    - match: \s*\(.*\)
+    - include: eventBegin
+
+  eventBegin:
+    - match: \{
+      store: punctuation.section.event.begin.lsl
+
+  eventBody:
+    - meta_scope: meta.event.lsl
+    - include: main
+    - include: eventEnd
+
+  eventEnd:
+    - match: \}
+      store: punctuation.section.event.end.lsl
+      pop: 1
+
+# ---------
+
+  operators:
+    - include: unaryOperators
+    - include: binaryOperators
+    - include: assignment
+    - include: accessor
+
+  unaryOperators:
+    - match: '~'
+      scope: keyword.operator.bitwise.lsl
+    - match: '!(?!=)'
+      scope: keyword.operator.logical.lsl
+    - match: --
+      scope: keyword.operator.arithmetic.decrement.lsl
+    - match: \+\+
+      scope: keyword.operator.arithmetic.increment.lsl
+    # positive or negative sign:
+    # immediately followed by valid number or valid hex
+    - match: (?:\+|\-)(?:(?=0x[0-9a-fA-F]+\b)|(?=[0-9]+\b))
+      scope: keyword.operator.sign.lsl
+
+  binaryOperators:
+    - match: '&&|\|\|'
+      scope: keyword.operator.logical.lsl
+    - match: |-
+        (?x:
+          ==   |
+          !=   |
+          <=   |
+          >=   |
+          <    |
+          >
+        )
+      scope: keyword.operator.comparison.lsl
+    - match: |-
+        (?x:
+          <<   |
+          >>   |
+          \^   |
+          \&   |
+          \|
+        )
+      scope: keyword.operator.bitwise.lsl
+    - match: |-
+        (?x:
+          \/   |
+          \%   |
+          \*   |
+          \+   |
+          \-
+        )
+      scope: keyword.operator.arithmetic.lsl
+    - match: ','
+      scope: keyword.operator.comma.lsl
+
+  assignment:
+    - match: =
+      scope: keyword.operator.assignment.lsl
+    - match: |-
+        (?x:
+          \/=  |
+          \*=  |
+          \+=  |
+          \-=  |
+          \%=
+        )
+      scope: keyword.operator.assignment.augmented.lsl
+
+  accessor:
+    - match: \.(?=[xyzs]\b)
+      scope: punctuation.accessor.lsl
+    - match: (?<=\.)[xyzs]\b
+      scope: variable.other.member.lsl
+
+# ---------
+
+  types:
+    - match: '{{validTypes}}'
+    - include: state
+    - include: constant
+    - include: identifier
+    - include: vector
+    - include: string
+    - include: float
+    - include: integer
+    - include: hexadecimal
+
+  # Any all-caps variable is const-styled
+  constant:
+    - match: \b[A-Z_]+[0-9]*\b
+      scope: constant.language
+
+  integer:
+    - match: '{{validInteger}}'
+      scope: constant.numeric.integer.decimal.lsl
+
+  hexadecimal:
+    - match: '{{validHex}}'
+      scope: constant.numeric.integer.hexadecimal.lsl
+
+  float:
+    # matches "1.0", "1." and ".1"
+    - match: '{{validFloat}}'
+      scope: meta.number.float.decimal.lsl constant.numeric.value.lsl constant.numeric.float.decimal.lsl
+
+#  vector:
+#    - match: validVector
+#      scope: storage.type.vector.lsl
+
+  escapeCharacter:
+    - match: \\n
+      scope: constant.character.escape.newline.lsl
+    - match: \\.
+      scope: constant.character.escape.lsl
+
+# ---------
+
+
+  flowControl:
+    - match: \b(jump|return|if|else|for|do|while|@)\b
+      scope: keyword.control.flow.lsl
