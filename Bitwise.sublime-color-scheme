@@ -54,6 +54,11 @@
 	"rules":
 	[
 		{
+			"scope": "source.lsl meta.state.lsl meta.event.params.lsl meta.event.lsl variable.lsl, source.lsl meta.state.lsl meta.event.params.lsl meta.event.params.parameter.lsl",
+			"foreground": ["hsl(200, 60%, 70%)", "hsl(330, 60%, 70%)"],
+		},
+
+		{
 			"scope": "comment, punctuation.definition.comment",
 			"foreground": "var(red2)"
 		},{

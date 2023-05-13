@@ -50,6 +50,7 @@ contexts:
     - include: float
     - include: string
     - include: operators
+    - include: eventEnd
 
 # ---------
 
@@ -236,7 +237,6 @@ contexts:
     - match: \)
       scope: punctuation.section.event.params.end.lsl
       set: eventBegin
-    - include: eventEnd
 
   eventBegin:
     - match: \{
@@ -379,3 +379,4 @@ contexts:
 # ---------
 # Todo: vector vs comparison
 # Todo: user functions
+# Todo: scopes within events and other scopes
