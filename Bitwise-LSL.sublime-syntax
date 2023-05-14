@@ -28,8 +28,7 @@ variables:
 contexts:
   # Only the bare minimum is allowed for an empty file.
   main:
-    - include: commentLine
-    - include: commentBlock
+    - include: comment
     - include: state
     - include: function
     - include: storage
@@ -45,7 +44,7 @@ contexts:
   functionBody:
     - meta_scope: meta.function.lsl
     - include: code
-    - include: eventEnd
+    - include: functionEnd
 
   # This gets included from: state -> stateBody -> event
   eventBody:
@@ -55,8 +54,7 @@ contexts:
 
   # Most top-level syntax definitions belong here.
   code:
-    - include: commentLine
-    - include: commentBlock
+    - include: comment
     - include: llFunction
     - include: flowControl
     - include: storage
@@ -70,10 +68,16 @@ contexts:
 
 # ---------
 
+  comment:
+    - include: commentLineFull # match line start/end for color scheme
+    - include: commentBlockFull # match line start/end for color scheme
+    - include: commentLine # simpler fallback
+    - include: commentBlock # simpler fallback
+
   commentLine:
-    - match: (//)(.*$)\n?
+    - match: (//)(.*$\n?)
       captures:
-        1: punctuation.definition.comment.begin.lsl
+        1: comment.line.double-slash.lsl punctuation.definition.comment.begin.lsl
         2: comment.line.double-slash.lsl
 
   commentBlock:
@@ -93,6 +97,30 @@ contexts:
       scope: punctuation.definition.comment.end.lsl
       pop: 1
 
+  commentLineFull:
+    - match: (^\s*)(\/\/)(.*$\n)
+      captures:
+        1: comment.line.double-slash.lsl
+        2: comment.line.double-slash.lsl punctuation.definition.comment.begin.lsl
+        3: comment.line.double-slash.lsl
+
+  commentBlockFull:
+    - match: (^\s*)(\/\*)
+      captures:
+        1: comment.block.lsl
+        2: comment.block.lsl punctuation.definition.comment.begin.lsl
+        #3: comment.block.lsl
+      push: commentBlockBodyFull
+
+  commentBlockBodyFull:
+    - meta_scope: comment.block.lsl
+    - include: commentBlockFullEnd
+
+  commentBlockFullEnd:
+    - match: \*/.*$\n
+      scope: punctuation.definition.comment.end.lsl
+      pop: 1
+
 # ---------
 
   parenthesesGroup:
@@ -105,7 +133,7 @@ contexts:
 
   parenthesesGroupBody:
     - meta_scope: meta.parens.lsl
-    - include: eventBody
+    - include: code
     - include: parenthesesGroupEnd
 
   parenthesesGroupEnd:
@@ -126,7 +154,7 @@ contexts:
 
   bracesGroupBody:
     - meta_scope: meta.braces.lsl
-    - include: eventBody
+    - include: code
     - include: bracesGroupEnd
 
   bracesGroupEnd:
@@ -147,6 +175,7 @@ contexts:
 
   squareBracketsGroupBody:
     - meta_scope: meta.brackets.lsl
+    - include: types
     - include: squareBracketsGroupEnd
 
   squareBracketsGroupEnd:
@@ -161,9 +190,10 @@ contexts:
     - match: |-
         (?x:
           <
-            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
-            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
-            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))
+            \s*
           >
         )
       captures:
@@ -184,10 +214,11 @@ contexts:
     - match: |-
         (?x:
           <
-            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
-            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
-            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
-            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))
+            \s*
           >
         )
       captures:
@@ -244,6 +275,7 @@ contexts:
 
   stateBody:
     - meta_scope: meta.state.lsl
+    - include: comment
     - include: event
     - include: stateEnd
 
@@ -303,7 +335,7 @@ contexts:
     - match: '({{validIdentifier}})(\s*\()'
       captures:
         1: entity.name.class.function.lsl
-        2: punctuation.section.function.params.begin.lsl
+        2: meta.function.params.lsl punctuation.section.function.params.begin.lsl
       push: functionParamsBegin
 
   functionParamsBegin:
@@ -318,6 +350,7 @@ contexts:
     - include: functionParamsEnd
 
   functionParameter:
+    - include: comment
     - include: storage
     - match: '((?<!\.){{validIdentifier}})(,?)'
       captures:
@@ -330,6 +363,7 @@ contexts:
       scope: punctuation.section.function.params.end.lsl
       pop: 2
       set: functionBegin
+    - include: comment
 
   functionBegin:
     - match: \{
@@ -352,43 +386,40 @@ contexts:
     - include: string
 
   operators:
+    - include: assignment
     - include: unaryOperators
     - include: binaryOperators
-    - include: assignment
     - include: accessor
     - include: typecast
 
   unaryOperators:
     - match: '~'
-      scope: keyword.operator.bitwise.lsl
+      scope: keyword.operator.bitwise.not.lsl
     - match: '!(?!=)'
-      scope: keyword.operator.logical.lsl
-    - match: --
+      scope: keyword.operator.logical.not.lsl
+    - match: --(?!-)
       scope: keyword.operator.arithmetic.decrement.lsl
-    - match: \+\+
+    - match: \+\+(?!\+)
       scope: keyword.operator.arithmetic.increment.lsl
 
   binaryOperators:
     - match: |-
-        (?x:
-          && | \|\|
-        )
+        (?x: && | \|\| )
       scope: keyword.operator.logical.lsl
-
     - match: |-
-        (?x:
-          == | != | <= | >= | < | >
-        )
+        (?x: == | != | <= | >= | < | > )
       scope: keyword.operator.comparison.lsl
     - match: |-
-        (?x:
-          << | >> | \^ | \& | \|
-        )
-      scope: keyword.operator.bitwise.lsl
+        (?x: << | >> )
+      scope: keyword.operator.bitwise.shift.lsl
+    - match: \&
+      scope: keyword.operator.bitwise.and.lsl
+    - match: \|
+      scope: keyword.operator.bitwise.or.lsl
+    - match: \^
+      scope: keyword.operator.bitwise.xor.lsl
     - match: |-
-        (?x:
-          \/ | \% | \* | \+ | \-
-        )
+        (?x: \/ | \% | \* | \+(?!\+) | \-(?!\-) )
       scope: keyword.operator.arithmetic.lsl
     - match: ','
       scope: keyword.operator.comma.lsl
@@ -396,11 +427,8 @@ contexts:
   assignment:
     - match: =
       scope: keyword.operator.assignment.lsl
-
     - match: |-
-        (?x:
-          \/= | \%= | \*= | \+= | \-=
-        )
+        (?x: \/= | \%= | \*= | \+= | \-= )
       scope: keyword.operator.assignment.augmented.lsl
 
   typecast:
@@ -466,3 +494,4 @@ contexts:
 
 # ---------
 # Todo: generic expression, for vector literals (otherwise they work fine)
+# Todo: for-loop specific syntax
