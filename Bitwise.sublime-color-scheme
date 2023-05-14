@@ -78,10 +78,6 @@
 			"foreground": "var(white)",
 			"font_style": "glow"
 		},{
-			"scope": "keyword.operator",
-			"foreground": "var(white)",
-			"font_style": "bold"
-		},{
 			"scope": "support.function.ll",
 			"foreground": "",
 			"font_style": "",
@@ -109,6 +105,10 @@
 			"scope": "entity.name.function",
 			"foreground": "var(teal2)",
 			"font_style": "",
+		},{
+			"scope": "keyword.operator",
+			"foreground": "var(white)",
+			"font_style": "bold"
 		},{
 			"scope": "keyword.control.flow.return",
 			"foreground": "#2A8EE8",
