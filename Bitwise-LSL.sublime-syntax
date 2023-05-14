@@ -31,10 +31,18 @@ contexts:
     - include: commentLine
     - include: commentBlock
     - include: state
-    - include: userFunction
+    - include: function
+    - include: storage
+    - include: constant
+    - include: identifier
+    - include: types
+    - include: assignment
+    - include: accessor
+    - include: squareBracketsGroup
+    - include: parenthesesGroup
 
-  # This gets included from: userFunction
-  userFunctionBody:
+  # This gets included from: function
+  functionBody:
     - meta_scope: meta.function.lsl
     - include: code
     - include: eventEnd
@@ -54,13 +62,10 @@ contexts:
     - include: storage
     - include: constant
     - include: identifier
-    - include: vector
-    - include: rotation
-    - include: integer
-    - include: float
-    - include: string
+    - include: types
     - include: operators
     - include: parenthesesGroup
+    - include: squareBracketsGroup
     - include: bracesGroup
 
 # ---------
@@ -107,7 +112,7 @@ contexts:
     - match: \)
       scope: punctuation.section.parens.end.lsl
       pop: 1
-    - include: main
+    - include: code
 
 # ---------
 
@@ -128,7 +133,7 @@ contexts:
     - match: \}
       scope: punctuation.section.braces.end.lsl
       pop: 1
-    - include: main
+    - include: code
 
 # ---------
 
@@ -148,7 +153,7 @@ contexts:
     - match: \]
       scope: punctuation.section.brackets.end.lsl
       pop: 1
-    - include: main
+    - include: code
 
 # ---------
 
@@ -263,16 +268,16 @@ contexts:
 
   eventParamsBody:
     - meta_scope: meta.event.params.lsl
-    - match: \,
-      scope: punctuation.separator.parameter.function.lsl
     - match: \s*
-      push: functionParameter
+      push: eventParameter
     - include: eventParamsEnd
 
-  functionParameter:
+  eventParameter:
     - include: storage
-    - match: '(?<!\.){{validIdentifier}}'
-      scope: meta.event.params.parameter.lsl
+    - match: '((?<!\.){{validIdentifier}})(,?)'
+      captures:
+        1: meta.event.params.parameter.lsl
+        2: punctuation.separator.parameter.event.lsl
     - include: eventParamsEnd
 
   eventParamsEnd:
@@ -294,57 +299,63 @@ contexts:
 
 # ---------
 
-  userFunction:
-    - match: '{{validIdentifier}}'
-      scope: entity.name.class.function.lsl
-      push: userFunctionParamsBegin
+  function:
+    - match: '({{validIdentifier}})(\s*\()'
+      captures:
+        1: entity.name.class.function.lsl
+        2: punctuation.section.function.params.begin.lsl
+      push: functionParamsBegin
 
-  userFunctionParamsBegin:
-    - match: \s*
-    - match: \(
-      scope: punctuation.section.function.params.begin.lsl
-      push: userFunctionParamsBody
+  functionParamsBegin:
+    - match: ''
+      push: functionParamsBody
       pop: 1
 
-  userFunctionParamsBody:
+  functionParamsBody:
     - meta_scope: meta.function.params.lsl
-    - match: \,
-      scope: punctuation.separator.parameter.function.lsl
     - match: \s*
-      push: userFunctionParameter
-    - include: userFunctionParamsEnd
+      push: functionParameter
+    - include: functionParamsEnd
 
-  userFunctionParameter:
+  functionParameter:
     - include: storage
-    - match: '(?<!\.){{validIdentifier}}'
-      scope: meta.function.params.parameter.lsl
-    - include: userFunctionParamsEnd
+    - match: '((?<!\.){{validIdentifier}})(,?)'
+      captures:
+        1: meta.function.params.parameter.lsl
+        2: punctuation.separator.parameter.function.lsl
+    - include: functionParamsEnd
 
-  userFunctionParamsEnd:
+  functionParamsEnd:
     - match: \)
       scope: punctuation.section.function.params.end.lsl
       pop: 2
-      set: userFunctionBegin
+      set: functionBegin
 
-  userFunctionBegin:
+  functionBegin:
     - match: \{
       scope: punctuation.section.function.begin.lsl
-      push: userFunctionBody
+      push: functionBody
       pop: 1
 
-  userFunctionEnd:
+  functionEnd:
     - match: \}
       scope: punctuation.section.function.end.lsl
       pop: 1
 
 # ---------
 
+  types:
+    - include: vector
+    - include: rotation
+    - include: integer
+    - include: float
+    - include: string
+
   operators:
     - include: unaryOperators
     - include: binaryOperators
     - include: assignment
     - include: accessor
-    - include: member
     - include: typecast
 
   unaryOperators:
