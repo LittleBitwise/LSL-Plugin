@@ -55,7 +55,11 @@
 	[
 		{
 			"scope": "source.lsl meta.state.lsl meta.event.params.lsl meta.event.lsl variable.lsl, source.lsl meta.state.lsl meta.event.params.lsl meta.event.params.parameter.lsl",
-			"foreground": ["hsl(200, 60%, 70%)", "hsl(330, 60%, 70%)"],
+			"foreground": ["#FF7C3B", "#FFD621"],
+		},{
+			"scope": "debug",
+			"foreground": "color(yellow)",
+			"font_style": "underline"
 		},
 
 		{
@@ -106,6 +110,10 @@
 			"foreground": "var(teal2)",
 			"font_style": "",
 		},{
+			"scope": "keyword.control.flow.return",
+			"foreground": "#2A8EE8",
+			"font_style": "bold",
+		},{
 			"scope": "keyword.control.flow.jump",
 			"foreground": "#f00",
 			"font_style": "bold",
@@ -113,6 +121,6 @@
 			"scope": "keyword.control.flow.jump.out",
 			"foreground": "#0f0",
 			"font_style": "bold",
-		}
+		},
 	]
 }

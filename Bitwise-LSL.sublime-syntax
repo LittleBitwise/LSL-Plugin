@@ -18,13 +18,7 @@ variables:
   validHexadecimal: '(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))'
 
   validSign: '(?:\+|\-)'
-  validNumber: '(?:{{validInteger}}|{{validHexadecimal}}|{{validFloat}})'
-
-  validVector: '<\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}}\s*>'
-  validRotation: '<\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}}\s*>'
-
-# <\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}},\s*{{validSign}}?{{validNumber}}\s*>
-# <\s*(?:\+|\-)?(?:(?:\b[0-9]+\b)|(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))|(?:(?:\b[0-9]+\.[0-9]+\b)|(?:[0-9]+\.(?![0-9]))|(?:(?<!\w)\.[0-9]+))),\s*(?:\+|\-)?(?:(?:\b[0-9]+\b)|(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))|(?:(?:\b[0-9]+\.[0-9]+\b)|(?:[0-9]+\.(?![0-9]))|(?:(?<!\w)\.[0-9]+))),\s*(?:\+|\-)?(?:(?:\b[0-9]+\b)|(?:\b(?i:(0x[0-9a-f]+))\b(?!\.))|(?:(?:\b[0-9]+\.[0-9]+\b)|(?:[0-9]+\.(?![0-9]))|(?:(?<!\w)\.[0-9]+)))\s*>
+  validNumber: '(?:{{validSign}}?{{validInteger}}|{{validHexadecimal}}|{{validFloat}})'
 
   validTypes: '(?:\b(float|integer|key|list|rotation|string|vector)\b)'
   validEvents: '(?:\b(at_rot_target|at_target|attach|changed|collision|collision_end|collision_start|control|dataserver|email|experience_permissions|experience_permissions_denied|http_request|http_response|land_collision|land_collision_end|land_collision_start|link_message|linkset_data|listen|money|moving_end|moving_start|no_sensor|not_at_rot_target|not_at_target|object_rez|on_rez|path_update|remote_data|run_time_permissions|sensor|state_entry|state_exit|timer|touch|touch_end|touch_start|transaction_result)\b)'
@@ -45,7 +39,7 @@ contexts:
     - include: constant
     - include: identifier
     - include: vector
-    - include: hexadecimal
+    - include: rotation
     - include: integer
     - include: float
     - include: string
@@ -138,24 +132,52 @@ contexts:
 # ---------
 
   vector:
-    - include: vectorBegin
+    - match: |-
+        (?x:
+          <
+            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))
+          >
+        )
+      captures:
+        0: constant.numeric.complex.vector.lsl
+        1: constant.numeric.lsl
+        2: debug.2
+        3: variable.lsl
+        4: constant.numeric.lsl
+        5: debug.5
+        6: variable.lsl
+        7: constant.numeric.lsl
+        8: debug.8
+        9: variable.lsl
 
-  vectorBegin:
-    - match: \<
-      scope: storage.type.vector.begin.lsl
-      push: vectorBody
+# ---------
 
-  vectorBody:
-    - meta_scope: storage.type.vector.lsl
-    - include: identifier
-    - include: vectorEnd
-    - include: float
-
-  vectorEnd:
-    - match: \>
-      scope: storage.type.vector.end.lsl
-      pop: 1
-    - include: main
+  rotation:
+    - match: |-
+        (?x:
+          <
+            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
+            (?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))
+          >
+        )
+      captures:
+        0: constant.numeric.complex.rotation.lsl
+        1: constant.numeric.lsl
+        2: debug.2
+        3: variable.lsl
+        4: constant.numeric.lsl
+        5: debug.5
+        6: variable.lsl
+        7: constant.numeric.lsl
+        8: debug.8
+        9: variable.lsl
+        10: constant.numeric.lsl
+        11: debug.11
+        12: variable.lsl
 
 # ---------
 
@@ -267,40 +289,27 @@ contexts:
       scope: keyword.operator.arithmetic.decrement.lsl
     - match: \+\+
       scope: keyword.operator.arithmetic.increment.lsl
-    # positive or negative sign:
-    # immediately followed by valid number or valid hex
-    - match: (?:\+|\-)(?:(?=0x[0-9a-fA-F]+\b)|(?=[0-9]+\b))
-      scope: keyword.operator.sign.lsl
 
   binaryOperators:
-    - match: '&&|\|\|'
-      scope: keyword.operator.logical.lsl
     - match: |-
         (?x:
-          ==   |
-          !=   |
-          <=   |
-          >=   |
-          <    |
-          >
+          && | \|\|
+        )
+      scope: keyword.operator.logical.lsl
+
+    - match: |-
+        (?x:
+          == | != | <= | >= | < | >
         )
       scope: keyword.operator.comparison.lsl
     - match: |-
         (?x:
-          <<   |
-          >>   |
-          \^   |
-          \&   |
-          \|
+          << | >> | \^ | \& | \|
         )
       scope: keyword.operator.bitwise.lsl
     - match: |-
         (?x:
-          \/   |
-          \%   |
-          \*   |
-          \+   |
-          \-
+          \/ | \% | \* | \+ | \-
         )
       scope: keyword.operator.arithmetic.lsl
     - match: ','
@@ -309,13 +318,10 @@ contexts:
   assignment:
     - match: =
       scope: keyword.operator.assignment.lsl
+
     - match: |-
         (?x:
-          \/=  |
-          \*=  |
-          \+=  |
-          \-=  |
-          \%=
+          \/= | \%= | \*= | \+= | \-=
         )
       scope: keyword.operator.assignment.augmented.lsl
 
@@ -338,16 +344,17 @@ contexts:
       scope: variable.other.member.lsl
 
   integer:
-    - match: '(?<!\.){{validInteger}}(?!\.)'
+    - match: '(?<!\.){{validSign}}?{{validInteger}}(?!\.)'
       scope: constant.numeric.integer.decimal.lsl
+    - include: hexadecimal
 
   hexadecimal:
-    - match: '{{validHexadecimal}}'
+    - match: '{{validSign}}?{{validHexadecimal}}'
       scope: constant.numeric.integer.hexadecimal.lsl
 
   float:
     # matches "1.0", "1." and ".1"
-    - match: '{{validFloat}}'
+    - match: '{{validSign}}?{{validFloat}}'
       scope: meta.number.float.decimal.lsl constant.numeric.value.lsl constant.numeric.float.decimal.lsl
 
   escapeCharacter:
