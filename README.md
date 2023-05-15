@@ -6,6 +6,9 @@ It also includes a completely custom theme _and_ code color scheme for Sublime T
 
 The syntax definition of that package has been a little lacking, so I wrote this as a small learning experience. I intend to use this as a drop-in replacement, rather than dive into the code that would generate this file.
 
+To use this syntax as a replacement, replace the contents of `Sublime Text/PackagesLSL/LSL.sublime-syntax` with the file from this repo.
+The "LSL > LSL" language option will become "LSL > Bitwise-LSL"
+
 Some specific improvements include:
 - opening braces are marked correctly with `.begin`
 - vector / rotation literals can be highlighted properly (nested expressions are still WIP)
