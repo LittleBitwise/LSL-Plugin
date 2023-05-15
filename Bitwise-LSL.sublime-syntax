@@ -425,7 +425,7 @@ contexts:
       scope: keyword.operator.comma.lsl
 
   assignment:
-    - match: =
+    - match: =(?!=)
       scope: keyword.operator.assignment.lsl
     - match: |-
         (?x: \/= | \%= | \*= | \+= | \-= )
