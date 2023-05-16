@@ -12,6 +12,7 @@ version: 2
 
 variables:
   validIdentifier: '(?:\b[_a-zA-Z]+\w*\b)'
+  validIDENTIFIER: '(?:\b[_A-Z]+\w*\b)'
 
   validFloat: '(?:(?:\b[0-9]+\.[0-9]+\b)|(?:[0-9]+\.(?![0-9]))|(?:(?<!\w)\.[0-9]+))'
   validInteger: '(?:\b[0-9]+\b)'
@@ -129,7 +130,7 @@ contexts:
 
   parenthesesGroupBegin:
     - match: \(
-      scope: meta.brace.round.start.lsl
+      scope: meta.brace.round.begin.lsl
       push: parenthesesGroupBody
 
   parenthesesGroupBody:
@@ -150,7 +151,7 @@ contexts:
 
   bracesGroupBegin:
     - match: \{
-      scope: meta.brace.curly.start.lsl punctuation.section.block.begin.lsl
+      scope: meta.brace.curly.begin.lsl punctuation.section.block.begin.lsl
       push: bracesGroupBody
 
   bracesGroupBody:
@@ -171,7 +172,7 @@ contexts:
 
   squareBracketsGroupBegin:
     - match: \[
-      scope: meta.brace.square.start.lsl
+      scope: meta.brace.square.begin.lsl
       push: squareBracketsGroupBody
 
   squareBracketsGroupBody:
@@ -271,7 +272,7 @@ contexts:
 
   stateBegin:
     - match: \{
-      scope: punctuation.section.block.begin.lsl
+      scope: meta.state.block.begin.lsl
       push: stateBody
       pop: 1
 
@@ -282,7 +283,7 @@ contexts:
 
   stateEnd:
     - match: \}
-      scope: punctuation.section.block.begin.lsl
+      scope: meta.state.block.begin.lsl
       pop: 1
 
 # ---------
@@ -295,7 +296,7 @@ contexts:
   eventParamsBegin:
     - match: \s*
     - match: \(
-      scope: meta.brace.round.start.lsl punctuation.section.function.begin.lsl
+      scope: meta.brace.round.begin.lsl punctuation.section.function.begin.lsl
       push: eventParamsBody
       pop: 1
 
@@ -321,13 +322,13 @@ contexts:
 
   eventBegin:
     - match: \{
-      scope: meta.brace.curly.start.lsl punctuation.section.event.begin.lsl
+      scope: meta.brace.curly.begin.lsl meta.event.block.begin.lsl
       push: eventBody
       pop: 1
 
   eventEnd:
     - match: \}
-      scope: meta.brace.curly.end.lsl punctuation.section.event.end.lsl
+      scope: meta.brace.curly.end.lsl meta.event.block.end.lsl
       pop: 1
 
 # ---------
@@ -366,7 +367,7 @@ contexts:
 
   functionBegin:
     - match: \{
-      scope: meta.function.block.start.lsl
+      scope: meta.function.block.begin.lsl
       push: functionBody
       pop: 1
 
@@ -541,6 +542,8 @@ contexts:
   identifier:
     - match: '{{validConstants}}'
       scope: constant.language.lsl
+    - match: '(?<!\.){{validIDENTIFIER}}'
+      scope: variable.constant.lsl
     - match: '(?<!\.){{validIdentifier}}'
       scope: variable.lsl
 
@@ -596,3 +599,4 @@ contexts:
       scope: preprocessor.lsl
 
 # ---------
+# Todo: do-while loop

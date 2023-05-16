@@ -88,8 +88,27 @@
 			"scope": "punctuation.definition.comment",
 		},
 
-		// Types and variables
+		// Variables
 		{
+			"scope": "variable",
+			"foreground": "var(variable)",
+		},{
+			"scope": "variable.constant",
+			"foreground": "var(foreground)",
+		},{
+			"scope": "variable.parameter",
+			"foreground": "var(white)",
+			"font_style": "bold",
+		},{
+			"scope": "constant.numeric.complex variable",
+			"foreground": "var(variable)",
+		},
+
+		// Types & values
+		{
+			"scope": "storage.type",
+			"foreground": "var(backgroundLight)",
+		},{
 			"scope": "constant.language",
 			"foreground": "color(var(c8) blenda(var(backgroundDark) 35%))",
 			"font_style": "bold",
@@ -97,21 +116,6 @@
 			"scope": "constant.character",
 			"foreground": "color(var(c8) blenda(var(backgroundDark) 35%))",
 			"font_style": "bold",
-		},{
-			"scope": "storage.type",
-			"foreground": "var(backgroundLight)",
-		},{
-			"scope": "variable",
-			"foreground": "var(variable)",
-		},{
-			"scope": "meta.event.params",
-			"foreground": "var(parameter)",
-		},{
-			"scope": "meta.function.params.parameter",
-			"foreground": "var(parameter)",
-		},{
-			"scope": "meta.event.params.parameter",
-			"foreground": "var(parameter)",
 		},{
 			"scope": "constant.numeric",
 			"foreground": "var(numeric)",
@@ -125,65 +129,64 @@
 		},{
 			"scope": "constant.numeric.complex constant.numeric",
 			"foreground": "var(numeric)",
-		},{
-			"scope": "constant.numeric.complex variable",
-			"foreground": "var(variable)",
 		},
 
-		// Scopes
+		// Braces
 		{
-			"scope": "punctuation.section.state.begin, punctuation.section.state.end",
+			"scope": "meta.brace.square",
 			"background": "var(backgroundMid)",
 		},{
-			"scope": "meta.brackets",
-			"background": "var(backgroundMid)",
-		},{
-			"scope": "punctuation.section.parens",
+			"scope": "meta.brace.round.begin, meta.brace.round.end",
 			"font_style": "bold",
 		},
 
 		// States & Events & Functions
 		{
-			"scope": "entity.name.class.state, entity.name.class.event, entity.name.class.function",
+			"scope": "entity.name.class, entity.name.function, support.function - support.function.builtin",
 			"font_style": "italic"
 		},
 
 		// State
 		{
-			"scope": "entity.name.class.state",
+			"scope": "entity.name.class",
+			"background": "var(backgroundMid)",
+		},{
+			"scope": "meta.state.block.begin, meta.state.block.end",
 			"background": "var(backgroundMid)",
 		},
 
 		// Event
 		{
-			"scope": "entity.name.class.event",
+			"scope": "entity.name.function",
 			"foreground": "var(c8)",
 		},{
-			"scope": "punctuation.section.event.params",
+			"scope": "punctuation.separator.parameter",
 			"foreground": "var(c8)",
 		},{
-			"scope": "punctuation.separator.parameter.event",
+			"scope": "meta.state punctuation.section.function.begin, meta.state punctuation.section.function.end",
 			"foreground": "var(c8)",
 		},{
-			"scope": "punctuation.section.event.begin, punctuation.section.event.end",
+			"scope": "meta.event.block.begin, meta.event.block.end",
 			"foreground": "var(c8)",
 		},
 
 		// Function
 		{
-			"scope": "entity.name.class.function",
+			"scope": "support.function",
 			"foreground": "var(c7)",
 		},{
-			"scope": "punctuation.section.function.params",
+			"scope": "support.function.builtin",
+			"foreground": "var(foreground)",
+		},{
+			"scope": "punctuation.separator.parameter - meta.state",
 			"foreground": "var(c7)",
 		},{
-			"scope": "punctuation.separator.parameter.function",
+			"scope": "punctuation.section.function.begin - meta.state, punctuation.section.function.end - meta.state",
 			"foreground": "var(c7)",
 		},{
-			"scope": "punctuation.section.function.begin, punctuation.section.function.end",
+			"scope": "meta.function.block.begin, meta.function.block.end",
 			"foreground": "var(c7)",
 		},
-
 
 		// Loops
 		{
@@ -198,6 +201,7 @@
 			"foreground": "var(c11)",
 			"font_style": "bold",
 		},
+
 		// Keywords
 		{
 			"scope": "keyword",
@@ -212,6 +216,7 @@
 		},{
 			"scope": "keyword.control.flow",
 			"foreground": "var(foreground)",
+			"font_style": "bold",
 		},{
 			"scope": "keyword.control.flow.return",
 			"foreground": "var(c1)",
