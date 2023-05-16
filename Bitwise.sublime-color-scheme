@@ -5,14 +5,8 @@
 		"debug": "color(yellow)",
 		"hide": "#0000",
 
-		"pink": "#f56777",
-        "teal": "#549a90",
-        "teal2": "#00c3ad",
-        "orange": "#c48157",
         "orange2": "#ed9157",
-        "green": "#699363",
         "green2": "#66aa19",
-        "red": "#c75461",
         "red2": "#fe5c6e",
 
         "c1": "#fe5c6e",
@@ -33,14 +27,10 @@
         "c16": "#febf5c",
         "c17": "#fe955c",
 
-        "p1": "#A7727D",
-        "p2": "#EDDBC7",
-        "p3": "#F8EAD8",
-        "p4": "#F9F5E7",
-
         "backgroundLight": "#4d4d65",
         "backgroundDark": "#373747",
         "backgroundMid": "color(var(backgroundLight) blenda(var(backgroundDark) 30%))",
+
         "foreground": "#bfbfe2",
         "background": "var(backgroundDark)",
 
@@ -234,7 +224,7 @@
 			"foreground": "var(c1)",
 		},{
 			"scope": "keyword.operator.typecast",
-			"foreground": "var(c16)",
+			"foreground": "var(backgroundLight)",
 		},{
 			"scope": "keyword.operator.arithmetic",
 			"foreground": "var(white)",
