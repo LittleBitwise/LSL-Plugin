@@ -194,6 +194,20 @@
 			"foreground": "var(c7)",
 		},
 
+
+		// Loops
+		{
+			"scope": "keyword.control.flow.loop",
+			"foreground": "var(c1)",
+		},{
+			"scope": "keyword.control.flow.loop.while, meta.loop.statement.while punctuation.section.group.begin, meta.loop.statement.while punctuation.section.group.end, punctuation.section.while.loop.begin, punctuation.section.while.loop.end",
+			"foreground": "var(c11)",
+			"font_style": "bold",
+		},{
+			"scope": "keyword.control.flow.loop.for, meta.loop.statement.for punctuation.section.group.begin, meta.loop.statement.for punctuation.section.group.end, punctuation.section.for.loop.begin, punctuation.section.for.loop.end",
+			"foreground": "var(c11)",
+			"font_style": "bold",
+		},
 		// Keywords
 		{
 			"scope": "keyword",
@@ -209,7 +223,7 @@
 			"scope": "keyword.control.flow",
 			"foreground": "var(foreground)",
 		},{
-			"scope": "keyword.control.flow.loop",
+			"scope": "keyword.control.flow.return",
 			"foreground": "var(c1)",
 		},{
 			"scope": "keyword.operator.comparison",

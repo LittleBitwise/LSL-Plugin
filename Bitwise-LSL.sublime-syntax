@@ -28,17 +28,18 @@ variables:
 contexts:
   # Only the bare minimum is allowed for an empty file.
   main:
-    - include: comment
     - include: state
     - include: function
     - include: storage
-    - include: constant
     - include: identifier
     - include: types
     - include: assignment
     - include: accessor
     - include: squareBracketsGroup
     - include: parenthesesGroup
+
+  prototype:
+    - include: comment
 
   # This gets included from: function
   functionBody:
@@ -54,11 +55,10 @@ contexts:
 
   # Most top-level syntax definitions belong here.
   code:
-    - include: comment
     - include: llFunction
+    - include: loop
     - include: flowControl
     - include: storage
-    - include: constant
     - include: identifier
     - include: types
     - include: operators
@@ -109,7 +109,6 @@ contexts:
       captures:
         1: comment.block.lsl
         2: comment.block.lsl punctuation.definition.comment.begin.lsl
-        #3: comment.block.lsl
       push: commentBlockBodyFull
 
   commentBlockBodyFull:
@@ -247,6 +246,7 @@ contexts:
       push: stringBody
 
   stringBody:
+    - meta_include_prototype: false
     - meta_scope: meta.string.lsl string.quoted.double.lsl
     - include: stringEnd
     - include: escapeCharacter
@@ -275,7 +275,6 @@ contexts:
 
   stateBody:
     - meta_scope: meta.state.lsl
-    - include: comment
     - include: event
     - include: stateEnd
 
@@ -350,7 +349,6 @@ contexts:
     - include: functionParamsEnd
 
   functionParameter:
-    - include: comment
     - include: storage
     - match: '((?<!\.){{validIdentifier}})(,?)'
       captures:
@@ -363,7 +361,6 @@ contexts:
       scope: punctuation.section.function.params.end.lsl
       pop: 2
       set: functionBegin
-    - include: comment
 
   functionBegin:
     - match: \{
@@ -378,11 +375,103 @@ contexts:
 
 # ---------
 
+  expressionParentheses:
+    - match: \(
+      scope: punctuation.section.group.begin.lsl
+      set:
+        - meta_scope: meta.group.lsl
+        - match: \)
+          scope: punctuation.section.group.end.lsl
+          pop: 1
+        - match: (?=\S)
+          push: expression
+
+  expression:
+    - meta_include_prototype: false
+    - match: ''
+      set:
+        - expressionEnd
+        - expressionBegin
+
+  expressionBegin:
+    - include: parenthesesGroup
+    - include: expressionBreak
+    - include: types
+    - include: function
+    - include: operators
+    - include: squareBracketsGroup
+    - include: typecast
+
+  expressionEnd:
+    - include: expressionBreak
+    - include: accessor
+    - match: (?=\S)
+      pop: 1
+
+  expressionBreak:
+    - match: (?=[;})\]])
+      pop: 1
+
+# ---------
+
+  loop:
+    - include: whileLoop
+    - include: forLoop
+
+  whileLoop:
+    - match: \bwhile\b
+      scope: keyword.control.flow.loop.while.lsl
+      push:
+        - whileLoopBegin
+        - expressionParentheses
+
+  forLoop:
+    - match: \bfor\b
+      scope: keyword.control.flow.loop.for.lsl
+      push:
+        - forLoopBegin
+        - expressionParentheses
+
+  whileLoopBegin:
+    - meta_scope: meta.loop.statement.while.lsl
+    - match: \{
+      scope: punctuation.section.while.loop.begin.lsl
+      push: whileLoopBody
+      pop: 1
+
+  whileLoopBody:
+    - meta_scope: meta.loop.lsl
+    - include: code
+    - include: whileLoopEnd
+
+  whileLoopEnd:
+    - match: \}
+      scope: punctuation.section.while.loop.end.lsl
+      pop: 1
+
+  forLoopBegin:
+    - meta_scope: meta.loop.statement.for.lsl
+    - match: \{
+      scope: punctuation.section.for.loop.begin.lsl
+      push: forLoopBody
+      pop: 1
+
+  forLoopBody:
+    - meta_scope: meta.loop.lsl
+    - include: code
+    - include: forLoopEnd
+
+  forLoopEnd:
+    - match: \}
+      scope: punctuation.section.for.loop.end.lsl
+      pop: 1
+
+# ---------
+
   types:
     - include: vector
     - include: rotation
-    - include: integer
-    - include: float
+    - include: number
     - include: string
 
   operators:
@@ -436,8 +525,10 @@ contexts:
       scope: keyword.operator.typecast.lsl
 
   accessor:
-    - match: \.(?=[xyzs]\b)
-      scope: punctuation.accessor.lsl
+    - match: (\.)([xyzs]\b)
+      captures:
+        1: punctuation.accessor.lsl
+        2: variable.other.member.lsl
 
 # ---------
 
@@ -450,8 +541,10 @@ contexts:
       scope: constant.language.lsl
     - match: '(?<!\.){{validIdentifier}}'
       scope: variable.lsl
-    - match: (?<=\.)[xyzs]\b
-      scope: variable.other.member.lsl
+
+  number:
+    - include: integer
+    - include: float
 
   integer:
     - match: '(?<!\.){{validSign}}?{{validInteger}}(?!\.)'
@@ -479,7 +572,7 @@ contexts:
       scope: keyword.control.flow.jump.inlsl
     - match: (?:\@\s*break\s*;)
       scope: keyword.control.flow.jump.out.lsl
-    - match: \b(?:for|do|while)\b
+    - match: \b(?:for|do)\b
       scope: keyword.control.flow.loop.lsl
     - match: \b(?:if|else)\b
       scope: keyword.control.flow.conditional.lsl
@@ -493,5 +586,3 @@ contexts:
       scope: entity.name.function.lsl
 
 # ---------
-# Todo: generic expression, for vector literals (otherwise they work fine)
-# Todo: for-loop specific syntax
