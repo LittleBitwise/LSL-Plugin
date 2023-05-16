@@ -10,9 +10,11 @@ To use this syntax as a replacement, replace the contents of `Sublime Text/Packa
 The "LSL > LSL" language option will become "LSL > Bitwise-LSL"
 
 Some specific improvements include:
+- doesn't break if preprocessor definitions include templates / functions / scopes
 - opening braces are marked correctly with `.begin`
 - vector / rotation literals can be highlighted properly (nested expressions are still WIP)
 - function / event parameter separators (commas) and surrounding parentheses can be highlighted
+- loop statement parentheses and body braces can be highlighted separately from others
 - operators can be highlighted independently from each other
 - control flow keywords can be highlighted separately from each other (including `jump` and `@label`)
 - and many more little details
