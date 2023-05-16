@@ -129,17 +129,17 @@ contexts:
 
   parenthesesGroupBegin:
     - match: \(
-      scope: punctuation.section.parens.begin.lsl
+      scope: meta.brace.round.start.lsl
       push: parenthesesGroupBody
 
   parenthesesGroupBody:
-    - meta_scope: meta.parens.lsl
+    - meta_scope: meta.brace.round.lsl
     - include: code
     - include: parenthesesGroupEnd
 
   parenthesesGroupEnd:
     - match: \)
-      scope: punctuation.section.parens.end.lsl
+      scope: meta.brace.round.end.lsl
       pop: 1
     - include: code
 
@@ -150,7 +150,7 @@ contexts:
 
   bracesGroupBegin:
     - match: \{
-      scope: punctuation.section.block.begin.lsl
+      scope: meta.brace.curly.start.lsl punctuation.section.block.begin.lsl
       push: bracesGroupBody
 
   bracesGroupBody:
@@ -160,7 +160,7 @@ contexts:
 
   bracesGroupEnd:
     - match: \}
-      scope: punctuation.section.block.end.lsl
+      scope: meta.brace.curly.end.lsl punctuation.section.block.end.lsl
       pop: 1
     - include: code
 
@@ -171,17 +171,17 @@ contexts:
 
   squareBracketsGroupBegin:
     - match: \[
-      scope: punctuation.section.brackets.begin.lsl
+      scope: meta.brace.square.start.lsl
       push: squareBracketsGroupBody
 
   squareBracketsGroupBody:
-    - meta_scope: meta.brackets.lsl
+    - meta_scope: meta.brace.square.lsl
     - include: types
     - include: squareBracketsGroupEnd
 
   squareBracketsGroupEnd:
     - match: \]
-      scope: punctuation.section.brackets.end.lsl
+      scope: meta.brace.square.end.lsl
       pop: 1
     - include: code
 
