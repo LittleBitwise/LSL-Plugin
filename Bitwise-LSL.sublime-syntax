@@ -51,7 +51,7 @@ contexts:
 
   # This gets included from: state -> stateBody -> event
   eventBody:
-    - meta_scope: meta.event.lsl
+    - meta_scope: meta.brace.curly.lsl meta.event.lsl
     - include: code
     - include: eventEnd
 
@@ -249,7 +249,7 @@ contexts:
 
   stringBody:
     - meta_include_prototype: false
-    - meta_scope: meta.string.lsl string.quoted.double.lsl
+    - meta_scope: string.lsl string.quoted.double.lsl
     - include: stringEnd
     - include: escapeCharacter
 
@@ -262,11 +262,11 @@ contexts:
 
   state:
     - match: default
-      scope: entity.name.namespace.lsl
+      scope: entity.name.class.lsl
       push: stateBegin
     - match: state\s+({{validIdentifier}})
       captures:
-        1: entity.name.namespace.lsl
+        1: entity.name.class.lsl
       push: stateBegin
 
   stateBegin:
@@ -289,18 +289,18 @@ contexts:
 
   event:
     - match: '{{validEvents}}'
-      scope: entity.name.class.lsl
+      scope: entity.name.function.lsl
       push: eventParamsBegin
 
   eventParamsBegin:
     - match: \s*
     - match: \(
-      scope: punctuation.section.event.params.begin.lsl
+      scope: meta.brace.round.start.lsl punctuation.section.function.begin.lsl
       push: eventParamsBody
       pop: 1
 
   eventParamsBody:
-    - meta_scope: meta.event.params.lsl
+    - meta_scope: meta.function.parameters.lsl
     - match: \s*
       push: eventParameter
     - include: eventParamsEnd
@@ -309,25 +309,25 @@ contexts:
     - include: storage
     - match: '((?<!\.){{validIdentifier}})(,?)'
       captures:
-        1: meta.event.params.parameter.lsl
+        1: variable.parameter.lsl
         2: punctuation.separator.parameter.event.lsl
     - include: eventParamsEnd
 
   eventParamsEnd:
     - match: \)
-      scope: punctuation.section.event.params.end.lsl
+      scope: meta.brace.round.end.lsl punctuation.section.function.end.lsl
       pop: 2
       set: eventBegin
 
   eventBegin:
     - match: \{
-      scope: punctuation.section.event.begin.lsl
+      scope: meta.brace.curly.start.lsl punctuation.section.event.begin.lsl
       push: eventBody
       pop: 1
 
   eventEnd:
     - match: \}
-      scope: punctuation.section.event.end.lsl
+      scope: meta.brace.curly.end.lsl punctuation.section.event.end.lsl
       pop: 1
 
 # ---------
@@ -335,7 +335,7 @@ contexts:
   function:
     - match: '({{validIdentifier}})(\s*\()'
       captures:
-        1: entity.name.function.lsl
+        1: support.function.lsl
         2: meta.function.parameters.lsl punctuation.section.function.begin.lsl
       push: functionParamsBegin
 
@@ -585,7 +585,7 @@ contexts:
 
   llFunction:
     - match: '{{validFunctions}}'
-      scope: entity.name.function.lsl
+      scope: support.function.builtin.lsl
 
 # ---------
 
