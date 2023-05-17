@@ -19,7 +19,13 @@ Some specific improvements include:
 - control flow keywords can be highlighted separately from each other (including `jump` and `@label`)
 - and many more little details
 
-#### Bitwise: (New syntax on the left)
-![Bitwise Theme for Sublime Text](https://i.imgur.com/a4mVYsG.png)
-#### Dracula: (New syntax on the left)
-![Dracula Theme for Sublime Text](https://i.imgur.com/yjIKzUV.png)
+#### Detail preview:
+![Bitwise Theme details](https://imgur.com/mcBbyOo.png)
+
+#### Normal code preview:
+The font is Cascadia Code.
+
+![Bitwise Theme code](https://imgur.com/rOx2Rmr.png)
+
+#### Dracula theme preview:
+![Dracula Theme preview](https://imgur.com/FebxqY0.png)
