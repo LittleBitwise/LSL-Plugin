@@ -46,13 +46,13 @@ contexts:
 
   # This gets included from: function
   functionBody:
-    - meta_scope: meta.function.block.lsl
+    - meta_scope: meta.function.body.lsl
     - include: code
     - include: functionEnd
 
   # This gets included from: state -> stateBody -> event
   eventBody:
-    - meta_scope: meta.brace.curly.lsl meta.event.lsl
+    - meta_scope: meta.brace.curly.lsl meta.event.body.lsl
     - include: code
     - include: eventEnd
 
@@ -277,7 +277,7 @@ contexts:
       pop: 1
 
   stateBody:
-    - meta_scope: meta.brace.curly.lsl meta.state.lsl
+    - meta_scope: meta.brace.curly.lsl meta.state.body.lsl
     - include: event
     - include: stateEnd
 
@@ -310,7 +310,7 @@ contexts:
     - include: storage
     - match: '((?<!\.){{validIdentifier}})(,?)'
       captures:
-        1: variable.parameter.lsl
+        1: meta.event.body.lsl variable.parameter.lsl
         2: punctuation.separator.parameter.event.lsl
     - include: eventParamsEnd
 
