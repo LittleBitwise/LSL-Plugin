@@ -192,23 +192,23 @@ contexts:
     - match: |-
         (?x:
           <
-            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
-            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}})),
-            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))\s*,
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))\s*,
+            \s*(?:({{validSign}}?{{validNumber}})|({{validSign}}?{{validIdentifier}}))\s*
             \s*
           >
         )
       captures:
         0: constant.numeric.complex.vector.lsl
-        1: constant.numeric.lsl
+        1: debug.1 constant.numeric.lsl
         2: debug.2
-        3: variable.lsl
-        4: constant.numeric.lsl
+        3: debug.3 variable.lsl
+        4: debug.4 constant.numeric.lsl
         5: debug.5
-        6: variable.lsl
-        7: constant.numeric.lsl
+        6: debug.6 variable.lsl
+        7: debug.7 constant.numeric.lsl
         8: debug.8
-        9: variable.lsl
+        9: debug.9 variable.lsl
 
 # ---------
 
@@ -400,6 +400,7 @@ contexts:
     - include: parenthesesGroup
     - include: expressionBreak
     - include: types
+    - include: identifier
     - include: function
     - include: operators
     - include: squareBracketsGroup
@@ -513,6 +514,8 @@ contexts:
     - match: |-
         (?x: \/ | \% | \* | \+(?!\+) | \-(?!\-) )
       scope: keyword.operator.arithmetic.lsl
+
+  comma:
     - match: ','
       scope: keyword.operator.comma.lsl
 
@@ -574,7 +577,7 @@ contexts:
 
   flowControl:
     - match: (?:\bjump\s+{{validIdentifier}}\s*;)
-      scope: keyword.control.flow.jump.inlsl
+      scope: keyword.control.flow.jump.in.lsl
     - match: (?:\@\s*break\s*;)
       scope: keyword.control.flow.jump.out.lsl
     - match: \b(?:for|do)\b
