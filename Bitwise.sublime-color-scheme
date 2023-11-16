@@ -35,7 +35,7 @@
         "background": "var(backgroundDark)",
 
         "numeric": "var(foreground)",
-        "variable": "var(foreground)",
+        "variable": "color(var(foreground) blenda(var(c5) 80%))",
         "parameter": "var(foreground)",
 
         "black": "#2d2d3b",
@@ -97,7 +97,7 @@
 			"foreground": "var(foreground)",
 		},{
 			"scope": "variable.parameter",
-			"foreground": "var(white)",
+			"foreground": "var(variable)",
 			"font_style": "bold",
 		},{
 			"scope": "constant.numeric.complex variable",
@@ -149,10 +149,10 @@
 		// State
 		{
 			"scope": "entity.name.class",
-			"background": "var(backgroundMid)",
+			"foreground": "var(c2)",
 		},{
 			"scope": "meta.state.block.begin, meta.state.block.end",
-			"background": "var(backgroundMid)",
+			"foreground": "var(c2)",
 		},
 
 		// Event
@@ -188,6 +188,30 @@
 			"foreground": "var(c7)",
 		},
 
+		// Control flow
+		{
+			"scope": "keyword.control.flow.conditional",
+			"foreground": "var(c12)",
+		},{
+			"scope": "keyword.control.flow.elseif",
+			"foreground": "var(c12)",
+		},{
+			"scope": "keyword.control.flow.else",
+			"foreground": "var(c12)",
+		},{
+			"scope": "keyword.control.flow.if",
+			"foreground": "var(c12)",
+		},{
+			"scope": "keyword.control.flow.expression.begin",
+			"foreground": "var(c12)",
+		},{
+			"scope": "keyword.control.flow.expression.end",
+			"foreground": "var(c12)",
+		},{
+			"scope": "punctuation.section.block.begin, punctuation.section.block.end",
+			"foreground": "var(c10)",
+		},
+
 		// Loops
 		{
 			"scope": "keyword.control.flow.loop",
@@ -200,6 +224,14 @@
 			"scope": "keyword.control.flow.loop.for, meta.loop.statement.for punctuation.section.group.begin, meta.loop.statement.for punctuation.section.group.end, punctuation.section.for.loop.begin, punctuation.section.for.loop.end",
 			"foreground": "var(c11)",
 			"font_style": "bold",
+		},{
+			"scope": "keyword.control.flow.jump",
+			"foreground": "var(c14)",
+			"font_style": "underline",
+		},{
+			"scope": "keyword.control.flow.jump.out",
+			"foreground": "var(c16)",
+			"font_style": "stippled_underline",
 		},
 
 		// Keywords
