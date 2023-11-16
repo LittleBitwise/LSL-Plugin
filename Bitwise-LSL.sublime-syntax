@@ -60,6 +60,7 @@ contexts:
   code:
     - include: llFunction
     - include: loop
+    - include: ifelse
     - include: flowControl
     - include: storage
     - include: identifier
@@ -414,6 +415,44 @@ contexts:
 
   expressionBreak:
     - match: (?=[;})\]])
+      pop: 1
+
+# ---------
+
+  ifelse:
+    - match: (\belse if\b)\s*(\()
+      captures:
+        1: keyword.control.flow.elseif.lsl #debug.lsl
+        2: keyword.control.flow.expression.lsl keyword.control.flow.expression.begin.lsl #debug.lsl
+      push:
+        - ifelseExpressionBegin
+    - match: (\belse\b)\s*(\()
+      captures:
+        1: keyword.control.flow.else.lsl #debug.lsl
+        2: keyword.control.flow.expression.lsl keyword.control.flow.expression.begin.lsl #debug.lsl
+      push:
+        - ifelseExpressionBegin
+    - match: (\bif\b)\s*(\()
+      captures:
+        1: keyword.control.flow.if.lsl #debug.lsl
+        2: keyword.control.flow.expression.lsl keyword.control.flow.expression.begin.lsl #debug.lsl
+      push:
+        - ifelseExpressionBegin
+
+  ifelseExpressionBegin:
+    - match: ''
+      scope: debug.lsl
+      push: ifelseExpressionBody
+      pop: 1
+
+  ifelseExpressionBody:
+    - meta_scope: keyword.control.flow.expression.lsl #debug.lsl
+    - include: code
+    - include: ifelseExpressionEnd
+
+  ifelseExpressionEnd:
+    - match: \)
+      scope: keyword.control.flow.expression.end.lsl #debug.lsl
       pop: 1
 
 # ---------
