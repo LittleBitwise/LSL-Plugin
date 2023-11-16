@@ -531,11 +531,11 @@ contexts:
         (?x: && | \|\| )
       scope: keyword.operator.logical.lsl
     - match: |-
-        (?x: == | != | <= | >= | < | > )
-      scope: keyword.operator.comparison.lsl
-    - match: |-
         (?x: << | >> )
       scope: keyword.operator.bitwise.shift.lsl
+    - match: |-
+        (?x: == | != | <= | >= | < | > )
+      scope: keyword.operator.comparison.lsl
     - match: \&
       scope: keyword.operator.bitwise.and.lsl
     - match: \|
@@ -609,7 +609,7 @@ contexts:
   flowControl:
     - match: (?:\bjump\s+{{validIdentifier}}\s*;)
       scope: keyword.control.flow.jump.in.lsl
-    - match: (?:\@\s*break\s*;)
+    - match: (?:\@\s*{{validIdentifier}}\s*;)
       scope: keyword.control.flow.jump.out.lsl
     - match: \b(?:for|do)\b
       scope: keyword.control.flow.loop.lsl

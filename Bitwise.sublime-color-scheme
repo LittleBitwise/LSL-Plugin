@@ -34,7 +34,7 @@
         "foreground": "#bfbfe2",
         "background": "var(backgroundDark)",
 
-        "numeric": "var(foreground)",
+        "numeric": "var(variable)",
         "variable": "color(var(foreground) blenda(var(c5) 80%))",
         "parameter": "var(foreground)",
 
@@ -79,13 +79,17 @@
 			"font_style": "underline"
 		},
 
-		// Comments
+		// Comments & preprocessor
 		{
 			"scope": "comment",
 			"foreground": "var(c1)",
 			"background": "var(black)"
 		},{
 			"scope": "punctuation.definition.comment",
+		},{
+			"scope": "preprocessor",
+			"foreground": "var(variable)",
+			"background": "var(backgroundLight)",
 		},
 
 		// Variables
@@ -149,10 +153,12 @@
 		// State
 		{
 			"scope": "entity.name.class",
-			"foreground": "var(c2)",
+			"foreground": "var(c8)",
+			"background": "var(backgroundMid)",
 		},{
 			"scope": "meta.state.block.begin, meta.state.block.end",
-			"foreground": "var(c2)",
+			"foreground": "var(c8)",
+			"background": "var(backgroundMid)",
 		},
 
 		// Event
@@ -191,25 +197,32 @@
 		// Control flow
 		{
 			"scope": "keyword.control.flow.conditional",
-			"foreground": "var(c12)",
+			"foreground": "var(c16)",
+			"font_style": "",
 		},{
 			"scope": "keyword.control.flow.elseif",
-			"foreground": "var(c12)",
+			"foreground": "var(c16)",
+			"font_style": "",
 		},{
 			"scope": "keyword.control.flow.else",
-			"foreground": "var(c12)",
+			"foreground": "var(c16)",
+			"font_style": "",
 		},{
 			"scope": "keyword.control.flow.if",
-			"foreground": "var(c12)",
+			"foreground": "var(c16)",
+			"font_style": "",
 		},{
 			"scope": "keyword.control.flow.expression.begin",
-			"foreground": "var(c12)",
+			"foreground": "var(c16)",
+			"font_style": "",
 		},{
 			"scope": "keyword.control.flow.expression.end",
-			"foreground": "var(c12)",
+			"foreground": "var(c16)",
+			"font_style": "",
 		},{
 			"scope": "punctuation.section.block.begin, punctuation.section.block.end",
-			"foreground": "var(c10)",
+			"foreground": "var(c16)",
+			"font_style": "",
 		},
 
 		// Loops
@@ -218,11 +231,11 @@
 			"foreground": "var(c1)",
 		},{
 			"scope": "keyword.control.flow.loop.while, meta.loop.statement.while punctuation.section.group.begin, meta.loop.statement.while punctuation.section.group.end, punctuation.section.while.loop.begin, punctuation.section.while.loop.end",
-			"foreground": "var(c11)",
+			"foreground": "var(c1)",
 			"font_style": "bold",
 		},{
 			"scope": "keyword.control.flow.loop.for, meta.loop.statement.for punctuation.section.group.begin, meta.loop.statement.for punctuation.section.group.end, punctuation.section.for.loop.begin, punctuation.section.for.loop.end",
-			"foreground": "var(c11)",
+			"foreground": "var(c1)",
 			"font_style": "bold",
 		},{
 			"scope": "keyword.control.flow.jump",
@@ -230,7 +243,7 @@
 			"font_style": "underline",
 		},{
 			"scope": "keyword.control.flow.jump.out",
-			"foreground": "var(c16)",
+			"foreground": "var(c14)",
 			"font_style": "stippled_underline",
 		},
 
@@ -258,10 +271,14 @@
 			"font_style": "bold"
 		},{
 			"scope": "keyword.operator.logical",
-			"foreground": "var(c1)",
+			"foreground": "var(c17)",
+			"font_style": ""
+		},{
+			"scope": "keyword.operator.logical.not",
+			"font_style": "bold"
 		},{
 			"scope": "keyword.operator.typecast",
-			"foreground": "var(backgroundLight)",
+			"foreground": "var(c11)",
 		},{
 			"scope": "keyword.operator.arithmetic",
 			"foreground": "var(white)",
