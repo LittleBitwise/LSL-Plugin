@@ -238,6 +238,10 @@
 			"foreground": "var(c1)",
 			"font_style": "bold",
 		},{
+			"scope": "keyword.control.flow.loop.do, meta.loop.statement.do punctuation.section.group.begin, meta.loop.statement.do punctuation.section.group.end, punctuation.section.do.loop.begin, punctuation.section.do.loop.end",
+			"foreground": "var(c1)",
+			"font_style": "bold",
+		},{
 			"scope": "keyword.control.flow.jump",
 			"foreground": "var(c14)",
 			"font_style": "underline",

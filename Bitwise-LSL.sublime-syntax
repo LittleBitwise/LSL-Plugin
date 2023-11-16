@@ -452,6 +452,7 @@ contexts:
   loop:
     - include: whileLoop
     - include: forLoop
+    - include: doLoop
 
   whileLoop:
     - match: \bwhile\b
@@ -500,6 +501,47 @@ contexts:
     - match: \}
       scope: punctuation.section.for.loop.end.lsl
       pop: 1
+
+  doLoop:
+    - match: \bdo\b
+      scope: keyword.control.flow.loop.do.lsl
+      push:
+        - doLoopBegin
+
+  doLoopBegin:
+    - meta_scope: meta.loop.statement.do.lsl
+    - match: \{
+      scope: punctuation.section.do.loop.begin.lsl
+      push: doLoopBody
+
+  doLoopBody:
+    - meta_scope: meta.loop.lsl
+    - include: code
+    - include: doLoopEnd
+
+  doLoopEnd:
+    - match: \}
+      scope: punctuation.section.do.loop.end.lsl
+      push:
+        - doLoopCondition
+      pop: 1
+
+  doLoopCondition:
+    - match: \bwhile\b
+      scope: keyword.control.flow.loop.do.lsl
+      push:
+        - doLoopExpressionParentheses
+
+  doLoopExpressionParentheses:
+    - match: \(
+      scope: punctuation.section.group.begin.lsl
+      set:
+        - meta_scope: meta.group.lsl
+        - match: \)
+          scope: punctuation.section.group.end.lsl
+          pop: 3
+        - match: (?=\S)
+          push: expression
 
 # ---------
 
@@ -633,4 +675,3 @@ contexts:
       scope: preprocessor.lsl
 
 # ---------
-# Todo: do-while loop
