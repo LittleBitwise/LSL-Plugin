@@ -190,6 +190,9 @@
 			"scope": "punctuation.section.function.begin - meta.state, punctuation.section.function.end - meta.state",
 			"foreground": "var(c7)",
 		},{
+			"scope": "meta.event punctuation.section.function.begin, meta.event punctuation.section.function.end",
+			"foreground": "var(c7)",
+		},{
 			"scope": "meta.function.block.begin, meta.function.block.end",
 			"foreground": "var(c7)",
 		},
