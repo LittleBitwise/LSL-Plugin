@@ -358,15 +358,10 @@ contexts:
     - match: \)
       scope: punctuation.section.function.end.lsl
       pop: 2
-      branch_point: functionParamsClosed
-      branch:
-        - functionBegin
-        - functionCalled
+      set: functionBegin
 
   functionBegin:
-    - match: (?!\s*{)
-      fail: functionParamsClosed
-    - match: \s*\{
+    - match: \{
       scope: meta.function.block.begin.lsl
       push: functionBody
       pop: 1
@@ -376,11 +371,6 @@ contexts:
       scope: meta.function.block.end.lsl
       pop: 1
 
-  # Todo: this seems to cause a crash when inspecting scopes on function calls
-  functionCalled:
-    - match: ''
-      pop: 1
-
 # ---------
 
   functionCall:
@@ -388,7 +378,37 @@ contexts:
       captures:
         1: support.function.call.lsl
         2: meta.function.parameters.lsl punctuation.section.function.begin.lsl
-      push: functionParamsBegin
+      push: functionCallParamsBegin
+
+  functionCallParamsBegin:
+    - match: ''
+      push: functionCallParamsBody
+      pop: 1
+
+  functionCallParamsBody:
+    - meta_scope: meta.function.parameters.lsl
+    - match: \s*
+      push: functionCallParameter
+    - include: functionCallParamsEnd
+
+  functionCallParameter:
+    - include: storage
+    - match: '((?<!\.){{validIdentifier}})(,?)'
+      captures:
+        1: variable.parameter.lsl
+        2: punctuation.separator.parameter.function.lsl
+    - include: functionCallParamsEnd
+
+  functionCallParamsEnd:
+    - match: \)
+      scope: punctuation.section.function.end.lsl
+      pop: 2
+      branch_point: functionCallParamsClosed
+      push: functionCalled
+
+  functionCalled:
+    - match: ''
+      pop: 1
 
 # ---------
 
