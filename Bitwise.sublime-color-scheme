@@ -303,5 +303,24 @@
 			"foreground": "var(c16)",
 			"font_style": "",
 		},
+
+		// Diffs
+		{
+			"scope": "meta.diff.header.from-file",
+			"foreground": "var(red2)",
+		},{
+			"scope": "markup.deleted",
+			"foreground": "var(red2)",
+			"background": "var(black)",
+		},{
+			"scope": "punctuation.definition.inserted",
+			"background": "var(black)",
+		},{
+			"scope": "meta.diff.header.to-file",
+			"foreground": "var(green2)"
+		},{
+			"scope": "markup.inserted",
+			"foreground": "var(green2)"
+		},
 	]
 }
