@@ -1,0 +1,24 @@
+{
+	"scope": "source.lsl - meta.state.body.lsl, meta.function.body.lsl, meta.event.body.lsl",
+
+	"completions":
+	[
+		{ "trigger": "COMBAT_CHANNEL\tinteger", "contents": "COMBAT_CHANNEL" },
+
+		{ "trigger": "DAMAGE_TYPE_GENERIC\tinteger", "contents": "DAMAGE_TYPE_GENERIC" },
+		{ "trigger": "DAMAGE_TYPE_ACID\tinteger", "contents": "DAMAGE_TYPE_ACID" },
+		{ "trigger": "DAMAGE_TYPE_BLUDGEONING\tinteger", "contents": "DAMAGE_TYPE_BLUDGEONING" },
+		{ "trigger": "DAMAGE_TYPE_COLD\tinteger", "contents": "DAMAGE_TYPE_COLD" },
+		{ "trigger": "DAMAGE_TYPE_ELECTRIC\tinteger", "contents": "DAMAGE_TYPE_ELECTRIC" },
+		{ "trigger": "DAMAGE_TYPE_FIRE\tinteger", "contents": "DAMAGE_TYPE_FIRE" },
+		{ "trigger": "DAMAGE_TYPE_FORCE\tinteger", "contents": "DAMAGE_TYPE_FORCE" },
+		{ "trigger": "DAMAGE_TYPE_NECROTIC\tinteger", "contents": "DAMAGE_TYPE_NECROTIC" },
+		{ "trigger": "DAMAGE_TYPE_PIERCING\tinteger", "contents": "DAMAGE_TYPE_PIERCING" },
+		{ "trigger": "DAMAGE_TYPE_POISON\tinteger", "contents": "DAMAGE_TYPE_POISON" },
+		{ "trigger": "DAMAGE_TYPE_PSYCHIC\tinteger", "contents": "DAMAGE_TYPE_PSYCHIC" },
+		{ "trigger": "DAMAGE_TYPE_RADIANT\tinteger", "contents": "DAMAGE_TYPE_RADIANT" },
+		{ "trigger": "DAMAGE_TYPE_SLASHING\tinteger", "contents": "DAMAGE_TYPE_SLASHING" },
+		{ "trigger": "DAMAGE_TYPE_SONIC\tinteger", "contents": "DAMAGE_TYPE_SONIC" },
+		{ "trigger": "DAMAGE_TYPE_EMOTIONAL\tinteger", "contents": "DAMAGE_TYPE_EMOTIONAL" },
+	]
+}

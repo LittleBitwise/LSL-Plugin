@@ -1,0 +1,17 @@
+{
+	"scope": "meta.function.body.lsl, meta.event.body.lsl",
+
+	"completions":
+	[
+		{ "trigger": "llSLPPF\t(void) function", "contents": "llSetLinkPrimitiveParamsFast(${1:integer linknumber}, ${2:list rules})" },
+		{ "trigger": "llGLPP\t(list) function", "contents": "llGetLinkPrimitiveParams(${1:integer linknumber}, ${2:list rules})" },
+		{ "trigger": "llROWP\t(key) function", "contents": "llRezObjectWithParams(${1:string object}, ${2:list params})" },
+
+		{ "trigger": "llRezObjectWithParams\t(key) function", "contents": "llRezObjectWithParams(${1:string object}, ${2:list params})" },
+		{ "trigger": "llAdjustDamage\t(void) function", "contents": "llAdjustDamage(${1:integer instance}, ${2:float new_damage})" },
+		{ "trigger": "llDamage\t(void) function", "contents": "llDamage(${1:key target}, ${2:float damage}, ${3:integer type})" },
+		{ "trigger": "llDetectedDamage\t(list) function", "contents": "llDetectedDamage(${1:integer number})" },
+		{ "trigger": "llDetectedRezzer\t(key) function", "contents": "llDetectedRezzer(${1:integer number})" },
+		{ "trigger": "llGetHealth\t(float) function", "contents": "llGetHealth(${1:key agent})" },
+	]
+}
