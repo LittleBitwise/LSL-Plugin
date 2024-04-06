@@ -693,9 +693,9 @@ contexts:
 # ---------
 
   flowControl:
-    - match: (?:\bjump\s+{{validIdentifier}}\s*;)
+    - match: (?:\bjump\s+{{validIdentifier}})
       scope: keyword.control.flow.jump.in.lsl
-    - match: (?:\@\s*{{validIdentifier}}\s*;)
+    - match: (?:\@\s*{{validIdentifier}})
       scope: keyword.control.flow.jump.out.lsl
     - match: \b(?:for|do)\b
       scope: keyword.control.flow.loop.lsl

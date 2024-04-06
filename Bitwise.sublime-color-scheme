@@ -246,12 +246,12 @@
 			"font_style": "bold",
 		},{
 			"scope": "keyword.control.flow.jump",
-			"foreground": "var(c14)",
+			"foreground": "var(c6)",
 			"font_style": "underline",
 		},{
 			"scope": "keyword.control.flow.jump.out",
-			"foreground": "var(c14)",
-			"font_style": "stippled_underline",
+			"foreground": "var(c6)",
+			"font_style": "underline",
 		},
 
 		// Keywords
